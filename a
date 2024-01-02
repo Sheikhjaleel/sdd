@@ -1,0 +1,40 @@
+// Load the client library
+gapi.load('client', function() {
+  // Initialize the client with API key and client ID
+  gapi.client.init({
+    'apiKey': 'AIzaSyD5cPQUlX2mE-aAJJVW4CUSC7SOij4d-wo',
+    'clientId': '1008268155698-16b0uaggbbeg139cnupkpsnnkbluik7l.apps.googleusercontent.com',
+    'scope': 'https://www.googleapis.com/auth/youtube.upload'
+  }).then(function() {
+    // Authorize the client
+    return gapi.auth2.getAuthInstance().signIn();
+  }).then(function() {
+    // Get the video file from the user
+    var file = document.getElementById('file').files[0];
+
+    // Create a resource with the video metadata
+    var metadata = {
+      snippet: {
+        title: 'My video title',
+        description: 'This is a description of my video',
+        tags: ['tag1', 'tag2']
+      },
+      status: {
+        privacyStatus: 'private'
+      }
+    };
+
+    // Upload the video
+    var request = gapi.client.youtube.videos.insert({
+      part: 'snippet,status',
+      resource: metadata,
+      media: {
+        body: file
+      }
+    });
+
+    request.execute(function(response) {
+      console.log(response);
+    });
+  });
+});
